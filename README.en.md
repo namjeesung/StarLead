@@ -1,5 +1,7 @@
 # StarLead (星引)
 
+![StarLead feature guide](docs/images/feature-guide-en-US.png)
+
 StarLead is a lightweight Windows 11 x64 action launcher with keyboard-shaped and linear panels.
 
 📘 [English User Guide](docs/USER_GUIDE.en-US.md) · [中文用户手册](docs/USER_GUIDE.zh-CN.md)

@@ -1,5 +1,7 @@
 # 星引用户手册
 
+![星引功能说明](images/feature-guide-zh-CN.png)
+
 > 适用于 StarLead（星引）v0.31，Windows 11 x64。
 
 [English manual](USER_GUIDE.en-US.md) · [返回项目首页](../README.md)
@@ -279,4 +281,3 @@ v0.31 起，应用字体统一使用“Microsoft YaHei UI / Segoe UI”回退链
 - 问题截图
 - 复现步骤
 - 是否使用浅色/深色及哪套界面风格
-

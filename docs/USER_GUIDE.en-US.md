@@ -1,5 +1,7 @@
 # StarLead User Guide
 
+![StarLead feature guide](images/feature-guide-en-US.png)
+
 > For StarLead v0.31 on Windows 11 x64.
 
 [中文手册](USER_GUIDE.zh-CN.md) · [Project home](../README.md)
@@ -278,4 +280,3 @@ When filing a GitHub issue, include:
 - A screenshot
 - Reproduction steps
 - Light/Dark mode and interface style in use
-

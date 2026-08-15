@@ -1,5 +1,7 @@
 # 星引 StarLead
 
+![星引功能说明](docs/images/feature-guide-zh-CN.png)
+
 面向 Windows 11 x64 的轻量动作面板。
 
 📘 [中文用户手册](docs/USER_GUIDE.zh-CN.md) · [English User Guide](docs/USER_GUIDE.en-US.md)
