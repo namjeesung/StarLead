@@ -17,6 +17,16 @@ public partial class MainWindow : Window
 {
     [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
     private static extern int SHEmptyRecycleBin(IntPtr hwnd, string? rootPath, uint flags);
+    [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = true)]
+    private static extern int SHQueryRecycleBin(string? rootPath, ref RecycleBinInfo info);
+
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    private struct RecycleBinInfo
+    {
+        public uint Size;
+        public long TotalSize;
+        public long ItemCount;
+    }
     private readonly HotKeyService _hotKey = new();
     private System.Windows.Point _dragStart;
     private DateTime _ignoreClicksUntil;
@@ -40,7 +50,17 @@ public partial class MainWindow : Window
 
     public void RegisterHotKey() => _hotKey.Register(this, App.Data.Settings);
     public void DisposeHotKey() => _hotKey.Dispose();
-    public void TogglePanel() { if (IsVisible) Hide(); else { PlacePanel(); Show(); Activate(); } }
+    public async void TogglePanel()
+    {
+        if (IsVisible) Hide();
+        else
+        {
+            PlacePanel();
+            Show();
+            Activate();
+            await RefreshRecycleBinIconAsync();
+        }
+    }
     private void CenterOnPrimary() { var area = SystemParameters.WorkArea; Left = area.Left + (area.Width - Width) / 2; Top = area.Top + (area.Height - Height) / 2; }
     private void PlacePanel()
     {
@@ -156,7 +176,7 @@ public partial class MainWindow : Window
     {
         MyComputerIcon.Source = await IconHelper.LoadAsync("::{20D04FE0-3AEA-1069-A2D8-08002B30309D}", false);
         DownloadsIcon.Source = await IconHelper.LoadAsync(KnownFolders.Downloads, true);
-        RecycleBinIcon.Source = await IconHelper.LoadAsync("::{645FF040-5081-101B-9F08-00AA002F954E}", false);
+        await RefreshRecycleBinIconAsync();
         var notepadPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "notepad.exe");
         var notebookIcon = await IconHelper.LoadAsync(notepadPath, false);
         foreach (var slot in App.Data.Slots.Concat(App.Data.LinearItems).Where(s => s.Kind == TargetKind.Notebook)) slot.Icon = notebookIcon;
@@ -398,17 +418,40 @@ public partial class MainWindow : Window
             Foreground = new SolidColorBrush(Color.FromRgb(17, 24, 39)),
             Background = Brushes.White
         };
-        menu.Items.Add(MenuItem(LocalizationService.Get("EmptyRecycleBin"), EmptyRecycleBin));
+        var emptyItem = MenuItem(LocalizationService.Get("EmptyRecycleBin"), EmptyRecycleBin);
+        emptyItem.IsEnabled = !TryGetRecycleBinItemCount(out var itemCount) || itemCount > 0;
+        menu.Items.Add(emptyItem);
         HoldWhileMenuOpen(menu);
         menu.IsOpen = true;
     }
-    private void EmptyRecycleBin()
+    private async void EmptyRecycleBin()
     {
+        if (TryGetRecycleBinItemCount(out var itemCount) && itemCount == 0)
+        {
+            await RefreshRecycleBinIconAsync();
+            Activate();
+            return;
+        }
+
         var result = SHEmptyRecycleBin(new WindowInteropHelper(this).Handle, null, 0);
         const int Cancelled = unchecked((int)0x800704C7);
         if (result != 0 && result != Cancelled)
             MessageBox.Show(LocalizationService.Get("EmptyRecycleBinFailed") + $"0x{result:X8}", LocalizationService.Get("AppName"), MessageBoxButton.OK, MessageBoxImage.Warning);
+        await RefreshRecycleBinIconAsync();
         Activate();
+    }
+    private static bool TryGetRecycleBinItemCount(out long itemCount)
+    {
+        var info = new RecycleBinInfo { Size = (uint)Marshal.SizeOf<RecycleBinInfo>() };
+        var result = SHQueryRecycleBin(null, ref info);
+        itemCount = result == 0 ? info.ItemCount : 0;
+        return result == 0;
+    }
+    private async Task RefreshRecycleBinIconAsync()
+    {
+        var isEmpty = TryGetRecycleBinItemCount(out var itemCount) && itemCount == 0;
+        RecycleBinIcon.Source = await IconHelper.LoadRecycleBinAsync(isEmpty)
+            ?? await IconHelper.LoadAsync("::{645FF040-5081-101B-9F08-00AA002F954E}", false);
     }
     private void LaunchFixedExplorer(string destination)
     {

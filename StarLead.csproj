@@ -11,7 +11,7 @@
     <Platforms>x64</Platforms>
     <AssemblyName>StarLead</AssemblyName>
     <Product>星引</Product>
-    <Version>0.31.0</Version>
+    <Version>0.32.0</Version>
     <ApplicationIcon>Assets\StarLead.ico</ApplicationIcon>
   </PropertyGroup>
 

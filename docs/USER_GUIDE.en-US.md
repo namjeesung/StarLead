@@ -2,7 +2,21 @@
 
 ![StarLead feature guide](images/feature-guide-en-US.png)
 
-> For StarLead v0.31 on Windows 11 x64.
+## Dark Theme Preview
+
+### Keyboard Panel
+
+![StarLead dark-theme keyboard panel](images/dark-keyboard-panel.png)
+
+The keyboard panel maps actions to number and letter keys. Launch by click or key press, swap positions by dragging, and optionally show the system entries.
+
+### Linear Panel
+
+![StarLead dark-theme linear panel](images/dark-linear-panel.png)
+
+The linear panel follows the order in which actions were added. Browse with the mouse wheel, launch by click or number key, and drag to reorder.
+
+> For StarLead v0.32 on Windows 11 x64.
 
 [中文手册](USER_GUIDE.zh-CN.md) · [Project home](../README.md)
 

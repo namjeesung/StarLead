@@ -11,6 +11,29 @@ public static class IconHelper
 {
     private static readonly Guid ImageFactoryId = new("BCC18B79-BA16-442F-80C4-8A59C30C463B");
 
+    public static Task<ImageSource?> LoadRecycleBinAsync(bool isEmpty) => Task.Run<ImageSource?>(() =>
+    {
+        var info = new StockIconInfo { Size = (uint)Marshal.SizeOf<StockIconInfo>() };
+        try
+        {
+            const uint RecycleBinEmpty = 31;
+            const uint RecycleBinFull = 32;
+            const uint GetIcon = 0x100;
+            const uint LargeIcon = 0x0;
+            if (SHGetStockIconInfo(isEmpty ? RecycleBinEmpty : RecycleBinFull, GetIcon | LargeIcon, ref info) != 0 || info.IconHandle == IntPtr.Zero)
+                return null;
+
+            var source = Imaging.CreateBitmapSourceFromHIcon(info.IconHandle, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(64, 64));
+            source.Freeze();
+            return source;
+        }
+        catch { return null; }
+        finally
+        {
+            if (info.IconHandle != IntPtr.Zero) DestroyIcon(info.IconHandle);
+        }
+    });
+
     public static Task<ImageSource?> LoadAsync(string path, bool folder) => Task.Run<ImageSource?>(() =>
     {
         IShellItemImageFactory? factory = null;
@@ -46,6 +69,16 @@ public static class IconHelper
     [StructLayout(LayoutKind.Sequential)]
     private struct NativeSize { public int Width; public int Height; }
 
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    private struct StockIconInfo
+    {
+        public uint Size;
+        public IntPtr IconHandle;
+        public int SystemImageIndex;
+        public int IconIndex;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] public string Path;
+    }
+
     [Flags]
     private enum ImageFlags : uint
     {
@@ -63,7 +96,14 @@ public static class IconHelper
     [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = true)]
     private static extern int SHCreateItemFromParsingName(string path, IntPtr bindContext, ref Guid interfaceId, out IShellItemImageFactory factory);
 
+    [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = true)]
+    private static extern int SHGetStockIconInfo(uint stockIconId, uint flags, ref StockIconInfo stockIconInfo);
+
     [DllImport("gdi32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool DeleteObject(IntPtr objectHandle);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool DestroyIcon(IntPtr iconHandle);
 }

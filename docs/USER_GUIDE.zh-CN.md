@@ -2,7 +2,21 @@
 
 ![星引功能说明](images/feature-guide-zh-CN.png)
 
-> 适用于 StarLead（星引）v0.31，Windows 11 x64。
+## 暗色主题界面预览
+
+### 键盘型面板
+
+![星引暗色主题键盘型面板](images/dark-keyboard-panel.png)
+
+键盘型面板按数字和字母键位排列动作，支持单击启动、按键启动、拖拽交换位置，以及独立显示系统入口。
+
+### 一字型面板
+
+![星引暗色主题一字型面板](images/dark-linear-panel.png)
+
+一字型面板按添加顺序横向排列，可用滚轮浏览、鼠标单击或数字键启动，并支持拖拽排序。
+
+> 适用于 StarLead（星引）v0.32，Windows 11 x64。
 
 [English manual](USER_GUIDE.en-US.md) · [返回项目首页](../README.md)
 
