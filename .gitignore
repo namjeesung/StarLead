@@ -1,0 +1,13 @@
+bin/
+obj/
+publish/
+installer-output/
+.vs/
+.idea/
+*.user
+*.suo
+*.tmp
+*.log
+Assets/StarLead-B-source.png
+Assets/StarLead-B-transparent.png
+Assets/StarLead-mark-chroma.png

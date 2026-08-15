@@ -1,0 +1,134 @@
+<Window x:Class="StarLead.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{DynamicResource AppName}" Width="1040" Height="660" WindowStyle="None" ResizeMode="NoResize"
+        AllowsTransparency="True" Background="Transparent" ShowInTaskbar="False" Topmost="True"
+        UseLayoutRounding="True" SnapsToDevicePixels="True"
+        PreviewKeyDown="Window_PreviewKeyDown" PreviewMouseLeftButtonDown="Window_PreviewMouseLeftButtonDown"
+        PreviewMouseMove="Window_PreviewMouseMove" PreviewMouseLeftButtonUp="Window_PreviewMouseLeftButtonUp">
+    <Window.Resources>
+        <Style x:Key="KeyButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="82"/><Setter Property="Height" Value="82"/><Setter Property="Margin" Value="5"/>
+            <Setter Property="Background" Value="{DynamicResource CardBrush}"/><Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/><Setter Property="AllowDrop" Value="True"/><Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform"><Setter.Value><ScaleTransform ScaleX="1" ScaleY="1"/></Setter.Value></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Shell" CornerRadius="18" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="4">
+                            <Grid>
+                                <Image Source="{Binding Icon}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True">
+                                    <Image.Style><Style TargetType="Image"><Setter Property="Width" Value="68"/><Setter Property="Height" Value="68"/><Setter Property="Margin" Value="0"/><Style.Triggers><DataTrigger Binding="{Binding ShowLabel}" Value="True"><Setter Property="Margin" Value="0,0,0,12"/><Setter Property="Width" Value="58"/><Setter Property="Height" Value="58"/></DataTrigger></Style.Triggers></Style></Image.Style>
+                                </Image>
+                                <TextBlock Text="{Binding DisplayName}" Foreground="{DynamicResource TextBrush}" FontSize="10" TextTrimming="CharacterEllipsis" TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+                                    <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding ShowLabel}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock x:Name="EmptyKey" Text="{Binding Key}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.82"/>
+                                <Border x:Name="BoundKeyBadge" Background="#A0111520" CornerRadius="7" Padding="5,1" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                    <TextBlock Text="{Binding Key}" FontSize="13" FontWeight="Bold" Foreground="White"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsEmpty}" Value="True"><Setter TargetName="BoundKeyBadge" Property="Visibility" Value="Collapsed"/></DataTrigger>
+                            <DataTrigger Binding="{Binding IsEmpty}" Value="False"><Setter TargetName="EmptyKey" Property="Visibility" Value="Collapsed"/></DataTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Shell" Property="Background" Value="{DynamicResource AccentSoftBrush}"/><Setter TargetName="Shell" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                <Trigger.EnterActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1.11" Duration="0:0:0.14"/><DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1.11" Duration="0:0:0.14"/></Storyboard></BeginStoryboard></Trigger.EnterActions>
+                                <Trigger.ExitActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0:0:0.18"/><DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0:0:0.18"/></Storyboard></BeginStoryboard></Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="Click" Handler="Slot_Click"/><EventSetter Event="MouseDoubleClick" Handler="Slot_DoubleClick"/>
+            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="Slot_MouseDown"/><EventSetter Event="Drop" Handler="Slot_Drop"/>
+            <EventSetter Event="DragOver" Handler="Slot_DragOver"/>
+            <EventSetter Event="PreviewMouseRightButtonUp" Handler="Slot_RightClick"/>
+        </Style>
+        <DataTemplate x:Key="KeyTemplate"><Button Style="{StaticResource KeyButtonStyle}" DataContext="{Binding}"/></DataTemplate>
+        <Style x:Key="FixedEntryButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="56"/><Setter Property="Height" Value="56"/><Setter Property="Margin" Value="5,0"/>
+            <Setter Property="Background" Value="{DynamicResource CardBrush}"/><Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
+                <Border x:Name="FixedShell" CornerRadius="16" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"><ContentPresenter/></Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="FixedShell" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/><Setter TargetName="FixedShell" Property="Background" Value="{DynamicResource AccentSoftBrush}"/></Trigger>
+                    <Trigger Property="IsPressed" Value="True"><Setter TargetName="FixedShell" Property="Opacity" Value="0.72"/></Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate></Setter.Value></Setter>
+        </Style>
+        <Style x:Key="LinearIconStyle" TargetType="Button">
+            <Setter Property="Width" Value="80"/><Setter Property="Height" Value="80"/><Setter Property="Margin" Value="{Binding LinearMargin}"/>
+            <Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Padding" Value="7"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/><Setter Property="RenderTransform"><Setter.Value><ScaleTransform/></Setter.Value></Setter>
+            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
+                <Grid x:Name="HoverHost" RenderTransformOrigin="0.5,0.5"><Grid.RenderTransform><ScaleTransform x:Name="HoverScale" ScaleX="1" ScaleY="1"/></Grid.RenderTransform><Ellipse x:Name="Glow" Fill="{DynamicResource AccentSoftBrush}" Opacity="0"/><Image Source="{Binding Icon}" Stretch="Uniform" Margin="5,2,5,18" SnapsToDevicePixels="True"/><Border Background="#B0111520" CornerRadius="8" Padding="5,1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,1,0"><TextBlock Text="{Binding Key}" Foreground="White" FontSize="11" FontWeight="Bold"/></Border><TextBlock x:Name="LinearName" Text="{Binding DisplayName}" Foreground="{DynamicResource TextBrush}" FontSize="10" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" MaxWidth="72"/></Grid>
+                <ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Glow" Property="Opacity" Value="1"/>
+                    <Trigger.EnterActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetName="HoverScale" Storyboard.TargetProperty="ScaleX" To="1.16" Duration="0:0:0.14"><DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation><DoubleAnimation Storyboard.TargetName="HoverScale" Storyboard.TargetProperty="ScaleY" To="1.16" Duration="0:0:0.14"><DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation></Storyboard></BeginStoryboard></Trigger.EnterActions>
+                    <Trigger.ExitActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetName="HoverScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.2"><DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation><DoubleAnimation Storyboard.TargetName="HoverScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.2"><DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation></Storyboard></BeginStoryboard></Trigger.ExitActions>
+                </Trigger>
+                    <DataTrigger Binding="{Binding ShowLabel}" Value="False"><Setter TargetName="LinearName" Property="Visibility" Value="Collapsed"/></DataTrigger>
+                    <DataTrigger Binding="{Binding IsHighlighted}" Value="True"><Setter TargetName="Glow" Property="Opacity" Value="1"/><DataTrigger.EnterActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1.18" Duration="0:0:0.14"/><DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1.18" Duration="0:0:0.14"/></Storyboard></BeginStoryboard></DataTrigger.EnterActions><DataTrigger.ExitActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0:0:0.17"/><DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0:0:0.17"/></Storyboard></BeginStoryboard></DataTrigger.ExitActions></DataTrigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate></Setter.Value></Setter>
+            <EventSetter Event="Click" Handler="LinearItem_Click"/><EventSetter Event="PreviewMouseLeftButtonDown" Handler="LinearItem_MouseDown"/>
+            <EventSetter Event="PreviewMouseRightButtonUp" Handler="LinearItem_RightClick"/>
+        </Style>
+        <DataTemplate x:Key="LinearItemTemplate"><Button Style="{StaticResource LinearIconStyle}" DataContext="{Binding}"/></DataTemplate>
+        <Style x:Key="InvisibleResizeThumbStyle" TargetType="Thumb">
+            <Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Opacity" Value="0"/>
+            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Thumb"><Border Background="Transparent" BorderThickness="0"/></ControlTemplate></Setter.Value></Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+    <Border x:Name="PanelShell" Background="{DynamicResource PanelBrush}" CornerRadius="30" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="28">
+        <Border.Effect><DropShadowEffect BlurRadius="35" ShadowDepth="10" Opacity="0.22"/></Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <Grid Background="Transparent">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{DynamicResource LogoAsset}" Width="46" Height="46" Stretch="Uniform" SnapsToDevicePixels="True"/>
+                    <StackPanel Margin="12,0,0,0"><TextBlock Text="{DynamicResource AppName}" FontSize="22" FontWeight="Bold"/><TextBlock Text="{DynamicResource MainSubtitle}" Foreground="{DynamicResource MutedBrush}" FontSize="12"/></StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="NameToggleButton" Click="NameToggle_Click" Padding="14,8" Margin="0,0,8,0" Background="{DynamicResource CardBrush}" Foreground="{DynamicResource TextBrush}" BorderBrush="{DynamicResource BorderBrush}" Cursor="Hand"/>
+                    <Button x:Name="PinButton" Click="Pin_Click" Padding="14,8" Margin="0,0,8,0" Background="{DynamicResource CardBrush}" Foreground="{DynamicResource TextBrush}" BorderBrush="{DynamicResource BorderBrush}" Cursor="Hand"/>
+                    <Button Content="{DynamicResource Settings}" Click="Settings_Click" Padding="14,8" Background="{DynamicResource CardBrush}" Foreground="{DynamicResource TextBrush}" BorderBrush="{DynamicResource BorderBrush}" Cursor="Hand"/>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel x:Name="SystemEntriesPanel" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,14,0,2">
+                <Button x:Name="MyComputerButton" Style="{StaticResource FixedEntryButtonStyle}" Click="MyComputer_Click"><Image x:Name="MyComputerIcon" Width="38" Height="38" Stretch="Uniform" SnapsToDevicePixels="True"/></Button>
+                <Button x:Name="DownloadsButton" Style="{StaticResource FixedEntryButtonStyle}" Click="Downloads_Click"><Image x:Name="DownloadsIcon" Width="38" Height="38" Stretch="Uniform" SnapsToDevicePixels="True"/></Button>
+                <Button x:Name="RecycleBinButton" Style="{StaticResource FixedEntryButtonStyle}" Click="RecycleBin_Click" PreviewMouseRightButtonUp="RecycleBin_RightClick"><Image x:Name="RecycleBinIcon" Width="38" Height="38" Stretch="Uniform" SnapsToDevicePixels="True"/></Button>
+            </StackPanel>
+
+            <Grid Grid.Row="2" VerticalAlignment="Center">
+                <StackPanel>
+                    <ItemsControl x:Name="Row1" ItemTemplate="{StaticResource KeyTemplate}"><ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/></ItemsPanelTemplate></ItemsControl.ItemsPanel></ItemsControl>
+                    <ItemsControl x:Name="Row2" ItemTemplate="{StaticResource KeyTemplate}" Margin="24,0,0,0"><ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/></ItemsPanelTemplate></ItemsControl.ItemsPanel></ItemsControl>
+                    <ItemsControl x:Name="Row3" ItemTemplate="{StaticResource KeyTemplate}" Margin="2,0,0,0"><ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/></ItemsPanelTemplate></ItemsControl.ItemsPanel></ItemsControl>
+                    <ItemsControl x:Name="Row4" ItemTemplate="{StaticResource KeyTemplate}" Margin="-15,0,0,0"><ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/></ItemsPanelTemplate></ItemsControl.ItemsPanel></ItemsControl>
+                </StackPanel>
+            </Grid>
+            <TextBlock Grid.Row="3" Text="{DynamicResource MainHint}" HorizontalAlignment="Center" Foreground="{DynamicResource MutedBrush}" FontSize="12"/>
+        </Grid>
+    </Border>
+    <Border x:Name="LinearShell" Visibility="Collapsed" Background="{DynamicResource PanelBrush}" CornerRadius="24" BorderThickness="0" Padding="10"
+            AllowDrop="True" Drop="LinearShell_Drop" DragOver="LinearShell_DragOver" PreviewMouseWheel="LinearShell_MouseWheel" PreviewMouseRightButtonUp="LinearShell_RightClick">
+        <Grid>
+            <ScrollViewer x:Name="LinearScroll" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" PanningMode="HorizontalOnly">
+                <ItemsControl x:Name="LinearItemsControl" ItemTemplate="{StaticResource LinearItemTemplate}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+            <Thumb x:Name="LinearLeftResize" Style="{StaticResource InvisibleResizeThumbStyle}" Width="9" HorizontalAlignment="Left" Cursor="SizeWE" DragDelta="LinearLeftResize_DragDelta"/>
+            <Thumb x:Name="LinearRightResize" Style="{StaticResource InvisibleResizeThumbStyle}" Width="9" HorizontalAlignment="Right" Cursor="SizeWE" DragDelta="LinearRightResize_DragDelta"/>
+        </Grid>
+    </Border>
+    </Grid>
+</Window>
