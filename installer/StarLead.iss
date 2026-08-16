@@ -1,5 +1,5 @@
 #define MyAppName "星引"
-#define MyAppVersion "0.33.0"
+#define MyAppVersion "0.32.0"
 #define MyAppPublisher "StarLead"
 #define MyAppExeName "StarLead.exe"
 
@@ -14,7 +14,7 @@ PrivilegesRequired=lowest
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 OutputDir=..\installer-output
-OutputBaseFilename=StarLead-Setup-x64-v0.33
+OutputBaseFilename=StarLead-Setup-x64-v0.32
 SetupIconFile=..\Assets\StarLead.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma2/max

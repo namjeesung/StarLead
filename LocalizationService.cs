@@ -7,11 +7,11 @@ public static class LocalizationService
     private static readonly Dictionary<string, (string Zh, string En)> Strings = new()
     {
         ["AppName"] = ("星引", "StarLead"),
-        ["MainSubtitle"] = ("随时呼出 · 快捷启动", "Open anytime · Launch instantly"),
+        ["MainSubtitle"] = ("单击启动 · 拖动整理 · 随时呼出", "Click to launch · Drag to arrange · Open anytime"),
         ["Settings"] = ("设置", "Settings"),
         ["NameOn"] = ("名称：开", "Names: On"), ["NameOff"] = ("名称：关", "Names: Off"),
         ["PinOn"] = ("置顶：开", "Pin: On"), ["PinOff"] = ("置顶：关", "Pin: Off"),
-        ["MainHint"] = ("单击启动 · 拖动换位 · 按键直达 · Esc 关闭", "Click to launch · Drag to swap · Press a key · Esc closes"),
+        ["MainHint"] = ("单击图标启动 · 拖动键位不会误开 · 按对应键直接启动 · Esc 关闭", "Click an icon to launch · Drag to arrange · Press its key to launch · Esc closes"),
         ["Open"] = ("打开", "Open"), ["Delete"] = ("删除", "Delete"),
         ["BindProgram"] = ("绑定程序", "Bind app"), ["BindFile"] = ("绑定文件", "Bind file"), ["BindFolder"] = ("绑定文件夹", "Bind folder"), ["BindNotebook"] = ("绑定笔记本", "Bind notebook"),
         ["RebindProgram"] = ("重新绑定为程序", "Rebind as app"), ["RebindFile"] = ("重新绑定为文件", "Rebind as file"), ["RebindFolder"] = ("重新绑定为文件夹", "Rebind as folder"), ["RebindNotebook"] = ("重新绑定为笔记本", "Rebind as notebook"), ["DeleteBinding"] = ("删除绑定", "Remove binding"),

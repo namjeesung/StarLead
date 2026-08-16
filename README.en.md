@@ -20,7 +20,6 @@ This is source-available software, not OSI-defined open-source software.
 - Reorder keyboard bindings and linear icons by dragging.
 - Switch instantly between light/dark themes and Chinese/English.
 - Choose Liquid Glass, Ocean Blue, Aurora, or Graphite; every style supports light and dark mode.
-- The keyboard panel now uses a refined glass layout with an in-panel mode switch and compact circular controls for names, pinning, and settings.
 - Adjust panel opacity from `0–100%`; icons remain opaque, and at `0%` the outer border and shadow disappear.
 - Optional Windows shell shortcuts for This PC, Downloads, and Recycle Bin.
 - Built-in local text notebook with free/grid-snapped or automatic card layout.
