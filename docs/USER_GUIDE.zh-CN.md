@@ -16,7 +16,7 @@
 
 一字型面板按添加顺序横向排列，可用滚轮浏览、鼠标单击或数字键启动，并支持拖拽排序。
 
-> 适用于 StarLead（星引）v0.32，Windows 11 x64。
+> 适用于 StarLead（星引）v0.33，Windows 11 x64。
 
 [English manual](USER_GUIDE.en-US.md) · [返回项目首页](../README.md)
 

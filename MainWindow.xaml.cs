@@ -83,7 +83,7 @@ public partial class MainWindow : Window
         PanelShell.Visibility = linear ? Visibility.Collapsed : Visibility.Visible;
         LinearShell.Visibility = linear ? Visibility.Visible : Visibility.Collapsed;
         if (linear) { Height = 104; Width = CalculateLinearWidth(); RefreshLinearItems(); }
-        else { Width = 1040; Height = 660; }
+        else { Width = 1120; Height = 700; }
         ApplySystemVisibility(); ApplyBackgroundOpacity(); PlacePanel();
     }
     public void ApplyBackgroundOpacity()
@@ -103,7 +103,10 @@ public partial class MainWindow : Window
         {
             PanelShell.BorderThickness = new Thickness(1);
             PanelShell.SetResourceReference(Border.BorderBrushProperty, "BorderBrush");
-            PanelShell.Effect = new DropShadowEffect { BlurRadius = 35, ShadowDepth = 10, Opacity = 0.22 };
+            PanelShell.Effect = new DropShadowEffect { BlurRadius = 28, ShadowDepth = 6, Opacity = 0.26 };
+            LinearShell.BorderThickness = new Thickness(1);
+            LinearShell.SetResourceReference(Border.BorderBrushProperty, "BorderBrush");
+            LinearShell.Effect = new DropShadowEffect { BlurRadius = 22, ShadowDepth = 4, Opacity = 0.22 };
         }
     }
     public void ApplySystemVisibility()
@@ -127,8 +130,9 @@ public partial class MainWindow : Window
     }
     private void UpdateQuickControls()
     {
-        NameToggleButton.Content = LocalizationService.Get(App.Data.Settings.ShowIconNames ? "NameOn" : "NameOff");
-        PinButton.Content = LocalizationService.Get(App.Data.Settings.AlwaysOnTop ? "PinOn" : "PinOff");
+        NameToggleButton.ToolTip = LocalizationService.Get(App.Data.Settings.ShowIconNames ? "NameOn" : "NameOff");
+        NameToggleButton.Background = App.Data.Settings.ShowIconNames ? (System.Windows.Media.Brush)FindResource("AccentSoftBrush") : (System.Windows.Media.Brush)FindResource("CardBrush");
+        PinButton.ToolTip = LocalizationService.Get(App.Data.Settings.AlwaysOnTop ? "PinOn" : "PinOff");
         PinButton.Background = App.Data.Settings.AlwaysOnTop ? (System.Windows.Media.Brush)FindResource("AccentSoftBrush") : (System.Windows.Media.Brush)FindResource("CardBrush");
     }
 
@@ -319,6 +323,9 @@ public partial class MainWindow : Window
     {
         if (FindButtonAncestor(e.OriginalSource as DependencyObject)?.DataContext is ActionSlot) return;
         e.Handled = true; var menu = new ContextMenu();
+        menu.Items.Add(MenuItem(LocalizationService.Get("KeyboardPanel"), () => SetPanelMode("Keyboard")));
+        menu.Items.Add(MenuItem(LocalizationService.Get("Settings"), () => Settings_Click(this, new RoutedEventArgs())));
+        menu.Items.Add(new Separator());
         menu.Items.Add(MenuItem((App.Data.Settings.LinearWidthMode == "Auto" ? "✓ " : "") + LocalizationService.Get("WidthAuto"), () => { App.Data.Settings.LinearWidthMode = "Auto"; ApplyLinearWidth(); App.Data.SaveAll(); }));
         menu.Items.Add(MenuItem((App.Data.Settings.LinearWidthMode == "Custom" ? "✓ " : "") + LocalizationService.Get("WidthCustom"), () => { App.Data.Settings.LinearWidthMode = "Custom"; App.Data.Settings.LinearPanelWidth = Width; ApplyLinearWidth(); App.Data.SaveAll(); }));
         menu.Items.Add(new Separator());
@@ -380,6 +387,16 @@ public partial class MainWindow : Window
         e.Handled = true; LaunchSlot(slot);
     }
     private void Settings_Click(object sender, RoutedEventArgs e) { new SettingsWindow { Owner = this }.ShowDialog(); RefreshRows(); UpdateQuickControls(); ApplyPanelMode(); RegisterHotKey(); Activate(); }
+    private void KeyboardMode_Click(object sender, RoutedEventArgs e) => SetPanelMode("Keyboard");
+    private void LinearMode_Click(object sender, RoutedEventArgs e) => SetPanelMode("Linear");
+    private void SetPanelMode(string mode)
+    {
+        if (App.Data.Settings.PanelMode == mode) return;
+        App.Data.Settings.PanelMode = mode;
+        ApplyPanelMode();
+        App.Data.SaveAll();
+        Activate();
+    }
     public void ApplyLanguage() { RefreshRows(); RefreshLinearItems(); UpdateQuickControls(); }
     private void NameToggle_Click(object sender, RoutedEventArgs e)
     {
